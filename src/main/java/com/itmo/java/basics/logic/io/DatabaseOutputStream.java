@@ -10,7 +10,6 @@ import java.io.OutputStream;
  * Записывает данные в БД
  */
 public class DatabaseOutputStream extends DataOutputStream {
-
     public DatabaseOutputStream(OutputStream outputStream) {
         super(outputStream);
     }
@@ -25,12 +24,17 @@ public class DatabaseOutputStream extends DataOutputStream {
      * "key" : "value"
      * 3key5value
      * Метод вернет 10
-     *
+     * (16?)
      * @param databaseRecord запись
      * @return размер записи
      * @throws IOException если запись не удалась
      */
     public int write(WritableDatabaseRecord databaseRecord) throws IOException {
-        return 0;
+        writeInt(databaseRecord.getKeySize());
+        write(databaseRecord.getKey());
+        writeInt(databaseRecord.getValueSize());
+        if (databaseRecord.isValuePresented())
+            write(databaseRecord.getValue());
+        return (int)databaseRecord.size();
     }
 }
