@@ -2,6 +2,7 @@ package com.itmo.java.basics.logic;
 
 import java.io.IOException;
 import java.util.Optional;
+import com.itmo.java.basics.exceptions.DatabaseException;
 
 /**
  * Сегмент - append-only файл, хранящий пары ключ-значение, разделенные специальным символом.
