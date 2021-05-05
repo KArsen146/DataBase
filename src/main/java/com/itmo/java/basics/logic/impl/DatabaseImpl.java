@@ -25,13 +25,13 @@ public class DatabaseImpl implements Database {
         }
         if (!Files.exists(databaseRoot)) {
             throw new DatabaseException(String.format("There is no directory with path %s, there you want to create database",
-                    databaseRoot.toString()));
+                    databaseRoot));
         }
         Path path = Paths.get(databaseRoot.toString(), dbName);
 
         if (Files.exists(path)) {
             throw new DatabaseException(String.format("Database with path %s is already exist",
-                    path.toString()));
+                    path));
         }
 
         try {
@@ -57,12 +57,20 @@ public class DatabaseImpl implements Database {
                     tName));
         }
         return tables.get(tName);
+
     }
+
+
+    private DatabaseImpl(String dbName, Path databaseRoot, Map<String, Table> tables) {
+        name = dbName;
+        path = databaseRoot;
+        this.tables = tables;
+    }
+
 
     public static Database initializeFromContext(DatabaseInitializationContext context) {
-        return null;
+        return new DatabaseImpl(context.getDbName(), context.getDatabasePath(), context.getTables());
     }
-
     @Override
     public String getName() {
         return name;

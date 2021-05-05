@@ -6,7 +6,6 @@ import com.itmo.java.basics.index.impl.SegmentOffsetInfoImpl;
 import com.itmo.java.basics.logic.DatabaseRecord;
 import com.itmo.java.basics.logic.Segment;
 import com.itmo.java.basics.exceptions.DatabaseException;
-import com.itmo.java.basics.logic.WritableDatabaseRecord;
 import com.itmo.java.basics.logic.io.DatabaseInputStream;
 import com.itmo.java.basics.logic.io.DatabaseOutputStream;
 
@@ -19,9 +18,6 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 public class SegmentImpl implements Segment {
-    public static Segment initializeFromContext(SegmentInitializationContext context) {
-        return null;
-    }
     private final String name;
     private final Path path;
     private boolean isReadonly;
@@ -30,7 +26,21 @@ public class SegmentImpl implements Segment {
     private long size;
     private final DatabaseOutputStream outputStream;
 
-    static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
+    public static Segment initializeFromContext(SegmentInitializationContext context) {
+        if (context.getCurrentSize() < MAX_SIZE){
+            try {
+                DatabaseOutputStream outputStream = new DatabaseOutputStream(new FileOutputStream(context.getSegmentPath().toString(), true));
+                return new SegmentImpl(context.getSegmentName(), context.getSegmentPath(), context.getCurrentSize(),
+                        context.getIndex(), outputStream, false);
+            }
+            catch (IOException ignored){
+            }
+        }
+        return new SegmentImpl(context.getSegmentName(), context.getSegmentPath(), context.getCurrentSize(),
+                context.getIndex(), null, true);
+    }
+
+    public static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
         Path path = Paths.get(tableRootPath.toString(), segmentName);
         DatabaseOutputStream stream;
 
@@ -57,7 +67,20 @@ public class SegmentImpl implements Segment {
         outputStream = stream;
     }
 
+    private SegmentImpl(String segmentName, Path path, long size, SegmentIndex index, DatabaseOutputStream stream, boolean isReadonly){
+        name = segmentName;
+        this.path = path;
+        this.size = size;
+        this.index = index;
+        this.outputStream = stream;
+        this.isReadonly = isReadonly;
+    }
     static String createSegmentName(String tableName) {
+        try {
+            Thread.sleep(1);
+        }
+        catch (Exception ignored){
+        }
         return tableName + "_" + System.currentTimeMillis();
     }
 
@@ -102,7 +125,7 @@ public class SegmentImpl implements Segment {
                 throw new IOException("Something went wrong with stream.skip()");
             }
             Optional<DatabaseRecord> record = stream.readDbUnit();
-            return record.map(e -> e.getValue());
+            return record.map(DatabaseRecord::getValue);
         }
     }
 

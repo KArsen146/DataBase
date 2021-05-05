@@ -13,14 +13,14 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 public class TableImpl implements Table {
-
-    public static Table initializeFromContext(TableInitializationContext context) {
-        return null;
-    }
     private final String name;
     private final Path path;
     private Segment actualSegment;
     private final TableIndex index;
+
+    public static Table initializeFromContext(TableInitializationContext context) {
+        return new CachingTable(new TableImpl(context.getTableName(), context.getTablePath(), context.getTableIndex(), context.getCurrentSegment()));
+    }
 
     public static Table create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
         Path path = Paths.get(pathToDatabaseRoot.toString(),  tableName);
@@ -29,8 +29,17 @@ public class TableImpl implements Table {
         } catch (IOException e) {
             throw new DatabaseException(e);
         }
-        return new TableImpl(tableName, path, tableIndex);
+        return new CachingTable(new TableImpl(tableName, path, tableIndex, null));
     }
+
+    private TableImpl(String tableName, Path path, TableIndex tableIndex, Segment currentSegment)
+    {
+        name = tableName;
+        this.path = path;
+        actualSegment = currentSegment;
+        index = tableIndex;
+    }
+
 
     private TableImpl(String tableName, Path path, TableIndex tableIndex)
     {
