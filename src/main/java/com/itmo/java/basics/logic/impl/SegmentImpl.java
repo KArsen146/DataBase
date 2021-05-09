@@ -31,7 +31,7 @@ public class SegmentImpl implements Segment {
     private final Path path;
     private boolean isReadonly;
     private final SegmentIndex index;
-    private static final int MAX_SIZE = 100000;
+    private static final int MAX_SIZE = 100_000;
     private long size;
     private final DatabaseOutputStream outputStream;
 

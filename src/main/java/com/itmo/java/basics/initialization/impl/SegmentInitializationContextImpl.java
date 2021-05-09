@@ -4,6 +4,7 @@ import com.itmo.java.basics.index.impl.SegmentIndex;
 import com.itmo.java.basics.initialization.SegmentInitializationContext;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class SegmentInitializationContextImpl implements SegmentInitializationContext {
     private final String name;
@@ -11,9 +12,9 @@ public class SegmentInitializationContextImpl implements SegmentInitializationCo
     private final SegmentIndex index;
     private final long size;
 
-    public SegmentInitializationContextImpl(String segmentName, Path segmentPath, long currentSize, SegmentIndex index) {
+    public SegmentInitializationContextImpl(String segmentName, Path tablePath, long currentSize, SegmentIndex index) {
         name = segmentName;
-        path = segmentPath;
+        path = Paths.get(tablePath.toString(), segmentName);
         size = currentSize;
         this.index = index;
     }
