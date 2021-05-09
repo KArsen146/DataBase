@@ -12,9 +12,9 @@ public class SegmentInitializationContextImpl implements SegmentInitializationCo
     private final SegmentIndex index;
     private final long size;
 
-    public SegmentInitializationContextImpl(String segmentName, Path tablePath, long currentSize, SegmentIndex index) {
+    public SegmentInitializationContextImpl(String segmentName, Path segmentPath, long currentSize, SegmentIndex index) {
         name = segmentName;
-        path = Paths.get(tablePath.toString(), segmentName);
+        path = segmentPath;
         size = currentSize;
         this.index = index;
     }
