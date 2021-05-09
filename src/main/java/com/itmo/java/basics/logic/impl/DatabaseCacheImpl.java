@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DatabaseCacheImpl implements DatabaseCache {
-    private static final int CASH_CAPACITY = 5000;
+    private static final int CAPACITY = 5_000;
     private final LinkedHashMap<String, byte[]> cache;
     public DatabaseCacheImpl(int capacity)
     {
@@ -20,7 +20,7 @@ public class DatabaseCacheImpl implements DatabaseCache {
 
     public DatabaseCacheImpl()
     {
-        this(CASH_CAPACITY);
+        this(CAPACITY);
     }
 
 

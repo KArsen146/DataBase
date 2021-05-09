@@ -1,4 +1,6 @@
 package com.itmo.java.basics.logic.impl;
+
+import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.initialization.SegmentInitializationContext;
 import com.itmo.java.basics.index.SegmentOffsetInfo;
 import com.itmo.java.basics.index.impl.SegmentIndex;
@@ -17,6 +19,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+/**
+ * Сегмент - append-only файл, хранящий пары ключ-значение, разделенные специальным символом.
+ * - имеет ограниченный размер, большие значения (>100000) записываются в последний сегмент, если он не read-only
+ * - при превышении размера сегмента создается новый сегмент и дальнейшие операции записи производятся в него
+ * - именование файла-сегмента должно позволять установить очередность их появления
+ * - является неизменяемым после появления более нового сегмента
+ */
 public class SegmentImpl implements Segment {
     private final String name;
     private final Path path;

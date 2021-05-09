@@ -19,6 +19,10 @@ public class DatabaseImpl implements Database {
     private final Path path;
     private final Map<String, Table> tables;
 
+    /**
+     * @param databaseRoot путь к директории, которая может содержать несколько БД,
+     *                     поэтому при создании БД необходимо создать директорию внутри databaseRoot.
+     */
     public static Database create(String dbName, Path databaseRoot) throws DatabaseException {
         if (dbName == null) {
             throw new DatabaseException("dbName is not stated");

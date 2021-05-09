@@ -4,7 +4,6 @@ import com.itmo.java.basics.index.impl.SegmentIndex;
 import com.itmo.java.basics.initialization.SegmentInitializationContext;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class SegmentInitializationContextImpl implements SegmentInitializationContext {
     private final String name;
@@ -12,15 +11,23 @@ public class SegmentInitializationContextImpl implements SegmentInitializationCo
     private final SegmentIndex index;
     private final long size;
 
-    public SegmentInitializationContextImpl(String segmentName, Path segmentPath, int currentSize, SegmentIndex index) {
+    public SegmentInitializationContextImpl(String segmentName, Path segmentPath, long currentSize, SegmentIndex index) {
         name = segmentName;
         path = segmentPath;
         size = currentSize;
         this.index = index;
     }
 
-    public SegmentInitializationContextImpl(String segmentName, Path tablePath, int currentSize) {
-        this(segmentName, Paths.get(tablePath.toString(), segmentName), currentSize, null);
+
+    /**
+     * Не используйте этот конструктор. Оставлен для совместимости со старыми тестами.
+     */
+    public SegmentInitializationContextImpl(String segmentName, Path tablePath, long currentSize) {
+        this(segmentName, tablePath, currentSize, new SegmentIndex());
+    }
+
+    public SegmentInitializationContextImpl(String segmentName, Path tablePath) {
+        this(segmentName, tablePath.resolve(segmentName), 0, new SegmentIndex());
     }
 
     @Override
