@@ -12,9 +12,10 @@ public class RespCommandId implements RespObject {
      * Код объекта
      */
     public static final byte CODE = '!';
+    private final int commandId;
 
     public RespCommandId(int commandId) {
-        //TODO implement
+        this.commandId = commandId;
     }
 
     /**
@@ -29,12 +30,17 @@ public class RespCommandId implements RespObject {
 
     @Override
     public String asString() {
-        //TODO implement
-        return null;
+        return Integer.toString(commandId);
     }
 
     @Override
     public void write(OutputStream os) throws IOException {
-        //TODO implement
+        os.write(CODE);
+        int v = commandId;
+        os.write((v >>> 24) & 0xFF);
+        os.write((v >>> 16) & 0xFF);
+        os.write((v >>> 8) & 0xFF);
+        os.write(v & 0xFF);
+        os.write(CRLF);
     }
 }

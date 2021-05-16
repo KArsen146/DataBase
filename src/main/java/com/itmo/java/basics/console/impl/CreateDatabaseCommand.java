@@ -4,15 +4,23 @@ import com.itmo.java.basics.console.DatabaseCommand;
 import com.itmo.java.basics.console.DatabaseCommandArgPositions;
 import com.itmo.java.basics.console.DatabaseCommandResult;
 import com.itmo.java.basics.console.ExecutionEnvironment;
+import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.logic.DatabaseFactory;
 import com.itmo.java.protocol.model.RespObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
  * Команда для создания базы данных
  */
 public class CreateDatabaseCommand implements DatabaseCommand {
+
+    private static final int ARGUMENTS_QUANTITY = 3;
+    private final ExecutionEnvironment env;
+    private final DatabaseFactory factory;
+    private final List<RespObject> commandArgs;
+
 
     /**
      * Создает команду.
@@ -26,7 +34,12 @@ public class CreateDatabaseCommand implements DatabaseCommand {
      * @throws IllegalArgumentException если передано неправильное количество аргументов
      */
     public CreateDatabaseCommand(ExecutionEnvironment env, DatabaseFactory factory, List<RespObject> commandArgs) {
-        //TODO implement
+        this.env = env;
+        this.factory = factory;
+        if (commandArgs.size() != ARGUMENTS_QUANTITY) {
+            throw new IllegalArgumentException(String.format("Wrong number of arguments - you need %d but given %d", ARGUMENTS_QUANTITY, commandArgs.size()));
+        }
+        this.commandArgs = commandArgs;
     }
 
     /**
@@ -36,7 +49,15 @@ public class CreateDatabaseCommand implements DatabaseCommand {
      */
     @Override
     public DatabaseCommandResult execute() {
-        //TODO implement
-        return null;
+        try {
+            String databaseName = commandArgs
+                    .get(DatabaseCommandArgPositions.DATABASE_NAME.getPositionIndex())
+                    .asString();
+            env.addDatabase(factory.createNonExistent(databaseName, env.getWorkingPath()));
+            return DatabaseCommandResult.success(String.format("Database with name %s successfully added", databaseName)
+                    .getBytes(StandardCharsets.UTF_8));
+        } catch (DatabaseException e) {
+            return new FailedDatabaseCommandResult(e.getMessage());
+        }
     }
 }
