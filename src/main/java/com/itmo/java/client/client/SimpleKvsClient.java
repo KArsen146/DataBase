@@ -14,10 +14,10 @@ public class SimpleKvsClient implements KvsClient {
     private final KvsConnection connection;
 
     /**
-     * Констурктор
+     * Конструктор
      *
      * @param databaseName       имя базы, с которой работает
-     * @param connectionSupplier метод создания коннекшена к базе
+     * @param connectionSupplier метод создания подключения к базе
      */
     public SimpleKvsClient(String databaseName, Supplier<KvsConnection> connectionSupplier) {
         this.databaseName = databaseName;

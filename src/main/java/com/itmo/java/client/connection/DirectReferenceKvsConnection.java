@@ -8,7 +8,7 @@ import com.itmo.java.protocol.model.RespObject;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Реализация коннекшена, когда есть прямая ссылка на объект
+ * Реализация подключения, когда есть прямая ссылка на объект
  * (пока еще нет реализации сокетов)
  */
 public class DirectReferenceKvsConnection implements KvsConnection {

@@ -7,6 +7,7 @@ import com.itmo.java.basics.logic.Table;
 import java.util.Optional;
 
 /**
+<<<<<<< HEAD
  * Декторатор для таблицы. Кэширует данные
  */
 public class CachingTable implements Table {
