@@ -54,11 +54,7 @@ public class GetKeyCommand implements DatabaseCommand {
                 throw new DatabaseException(String.format("There is no database with name %s", databaseName));
             }
             Optional<byte[]> value = database.get().read(tableName, key);
-            if (value.isEmpty()) {
-                throw new DatabaseException(String.format("Value for key %s in table %s in database %s is absent", key, tableName, databaseName));
-            }
-            return DatabaseCommandResult.success(value.get());
-
+            return DatabaseCommandResult.success(value.isEmpty() ? null : value.get());
         } catch (DatabaseException e) {
             return new FailedDatabaseCommandResult(e.getMessage());
         }

@@ -2,7 +2,8 @@ package com.itmo.java.basics;
 
 import com.itmo.java.basics.console.*;
 import com.itmo.java.basics.exceptions.DatabaseException;
-import com.itmo.java.basics.initialization.impl.*;
+import com.itmo.java.basics.initialization.impl.DatabaseServerInitializer;
+import com.itmo.java.basics.initialization.impl.InitializationContextImpl;
 import com.itmo.java.protocol.model.RespArray;
 
 import java.util.concurrent.CompletableFuture;
@@ -42,7 +43,6 @@ public class DatabaseServer {
     }
 
     public ExecutionEnvironment getEnv() {
-        //TODO implement
-        return null;
+        return env;
     }
 }

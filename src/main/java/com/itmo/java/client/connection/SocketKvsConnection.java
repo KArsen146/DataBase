@@ -6,25 +6,43 @@ import com.itmo.java.protocol.RespWriter;
 import com.itmo.java.protocol.model.RespArray;
 import com.itmo.java.protocol.model.RespObject;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.Socket;
+
 /**
  * С помощью {@link RespWriter} и {@link RespReader} читает/пишет в сокет
  */
 public class SocketKvsConnection implements KvsConnection {
+    private final Socket socket;
+    private final RespReader respReader;
+    private final RespWriter respWriter;
 
     public SocketKvsConnection(ConnectionConfig config) {
-        //TODO implement
+        try {
+            socket = new Socket(config.getHost(), config.getPort());
+            respReader = new RespReader(socket.getInputStream());
+            respWriter = new RespWriter(socket.getOutputStream());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     /**
      * Отправляет с помощью сокета команду и получает результат.
+     *
      * @param commandId id команды (номер)
      * @param command   команда
      * @throws ConnectionException если сокет закрыт или если произошла другая ошибка соединения
      */
     @Override
     public synchronized RespObject send(int commandId, RespArray command) throws ConnectionException {
-        //TODO implement
-        return null;
+        try {
+            respWriter.write(command);
+            return respReader.readObject();
+        } catch (IOException e) {
+            throw new ConnectionException(e.getMessage());
+        }
     }
 
     /**
@@ -32,6 +50,12 @@ public class SocketKvsConnection implements KvsConnection {
      */
     @Override
     public void close() {
-        //TODO implement
+        try {
+            respWriter.close();
+            respReader.close();
+            socket.close();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

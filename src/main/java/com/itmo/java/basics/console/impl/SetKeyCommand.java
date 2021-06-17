@@ -55,9 +55,9 @@ public class SetKeyCommand implements DatabaseCommand {
             if (database.isEmpty()) {
                 throw new DatabaseException(String.format("There is no database with name %s", databaseName));
             }
+            Optional<byte[]> previousValue = database.get().read(tableName, key);
             database.get().write(tableName, key, value);
-            return DatabaseCommandResult.success(String.format("Key %s was successfully added in table %s in database %s", key, tableName, databaseName)
-                    .getBytes(StandardCharsets.UTF_8));
+            return DatabaseCommandResult.success(previousValue.isEmpty() ? null : previousValue.get());
 
         } catch (DatabaseException e) {
             return new FailedDatabaseCommandResult(e.getMessage());

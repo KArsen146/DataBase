@@ -8,7 +8,7 @@ public class DatabaseConfig {
         this.workingPath = workingPath;
     }
 
-    public DatabaseConfig(){
+    public DatabaseConfig() {
         workingPath = DEFAULT_WORKING_PATH;
     }
 
